@@ -1,5 +1,5 @@
 module "newrelic" {
-  source = "../../terraform-blueprints/newrelic"
+  source = "git::https://github.com/diego-silva1016/terraform-blueprints-fase-5.git//newrelic?ref=main"
 
   release_name  = var.release_name
   namespace     = var.namespace

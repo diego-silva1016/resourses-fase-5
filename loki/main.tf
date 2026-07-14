@@ -1,5 +1,5 @@
 module "loki" {
-  source = "../../terraform-blueprints/loki"
+  source = "git::https://github.com/diego-silva1016/terraform-blueprints-fase-5.git//loki?ref=main"
 
   release_name  = var.release_name
   namespace     = var.namespace

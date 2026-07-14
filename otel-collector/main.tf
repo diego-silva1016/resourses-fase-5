@@ -48,7 +48,7 @@ locals {
 }
 
 module "otel_collector" {
-  source = "../../terraform-blueprints/otel-collector"
+  source = "git::https://github.com/diego-silva1016/terraform-blueprints-fase-5.git//otel-collector?ref=main"
 
   release_name  = var.release_name
   namespace     = var.namespace

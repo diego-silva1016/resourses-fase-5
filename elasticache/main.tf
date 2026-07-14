@@ -1,5 +1,5 @@
 module "elasticache" {
-  source = "../../terraform-blueprints/elasticache"
+  source = "git::https://github.com/diego-silva1016/terraform-blueprints-fase-5.git//elasticache?ref=main"
 
   project_name       = var.project_name
   vpc_id             = var.vpc_id

@@ -1,5 +1,5 @@
 module "eks" {
-  source = "../../terraform-blueprints/eks"
+  source = "git::https://github.com/diego-silva1016/terraform-blueprints-fase-5.git//eks?ref=main"
 
   cluster_name     = var.cluster_name
   cluster_role_arn = var.cluster_role_arn
