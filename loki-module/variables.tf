@@ -5,12 +5,12 @@ variable "aws_region" {
 
 variable "state_bucket_name" {
   type    = string
-  default = "solidarytech-terraform-state"
+  default = "solidarytech-terraform-state-fase-5"
 }
 
 variable "release_name" {
   type    = string
-  default = "prometheus"
+  default = "loki"
 }
 
 variable "namespace" {
@@ -20,11 +20,11 @@ variable "namespace" {
 
 variable "chart_version" {
   type    = string
-  default = "25.27.0"
+  default = "6.16.0"
 }
 
 variable "values" {
-  type    = map(any)
+  type    = any
   default = {}
 }
 

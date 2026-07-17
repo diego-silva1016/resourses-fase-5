@@ -1,6 +1,6 @@
 terraform {
   backend "s3" {
-    bucket         = "solidarytech-terraform-state"
+    bucket         = "solidarytech-terraform-state-fase-5"
     key            = "infrastructure/terraform.tfstate"
     region         = "us-east-1"
     dynamodb_table = "solidarytech-terraform-locks"
@@ -64,7 +64,7 @@ variable "elasticache_cluster_id" {
 variable "newrelic_license_key" {
   type      = string
   sensitive = true
-  default   = null
+  default   = "9a62fdb47683812f52fd532a315aff7b19acNRAL"
 }
 
 variable "enable_observability" {
@@ -113,7 +113,6 @@ provider "helm" {
     token                  = data.aws_eks_cluster_auth.this.token
   }
 }
-
 # ---------------------------------------------------------------------------
 # Infrastructure modules (resources/<subpasta>)
 # ---------------------------------------------------------------------------
@@ -201,9 +200,14 @@ module "argocd" {
   depends_on = [module.eks]
 }
 
+# A aplicacao dos manifestos GitOps (ArgoCD Applications) fica isolada em
+# resources/gitops/, que e um stack Terraform independente (estado proprio),
+# aplicado separadamente depois que o EKS e o ArgoCD (acima) ja existirem.
+# Ver resources/gitops/main.tf.
+
 module "prometheus" {
   count  = var.enable_observability ? 1 : 0
-  source = "./prometheus"
+  source = "./prometheus-module"
 
   tags = var.tags
 
@@ -212,7 +216,7 @@ module "prometheus" {
 
 module "grafana" {
   count  = var.enable_observability ? 1 : 0
-  source = "./grafana"
+  source = "./grafana-module"
 
   tags = var.tags
 
@@ -221,7 +225,7 @@ module "grafana" {
 
 module "loki" {
   count  = var.enable_observability ? 1 : 0
-  source = "./loki"
+  source = "./loki-module"
 
   tags = var.tags
 

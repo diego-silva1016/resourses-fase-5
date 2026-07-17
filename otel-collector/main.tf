@@ -1,6 +1,9 @@
 locals {
   otel_values = coalesce(var.values, {
     mode = var.mode
+    image = {
+      repository = "otel/opentelemetry-collector-contrib"
+    }
     config = {
       receivers = {
         otlp = {
@@ -11,8 +14,8 @@ locals {
         }
       }
       exporters = {
-        logging = {
-          loglevel = "info"
+        debug = {
+          verbosity = "normal"
         }
         prometheusremotewrite = {
           endpoint = "http://prometheus-server.monitoring.svc.cluster.local:9090/api/v1/write"
@@ -31,15 +34,15 @@ locals {
         pipelines = {
           traces = {
             receivers = ["otlp"]
-            exporters = ["logging", "otlp"]
+            exporters = ["debug", "otlp"]
           }
           metrics = {
             receivers = ["otlp"]
-            exporters = ["logging", "prometheusremotewrite"]
+            exporters = ["debug", "prometheusremotewrite"]
           }
           logs = {
             receivers = ["otlp"]
-            exporters = ["logging", "loki"]
+            exporters = ["debug", "loki"]
           }
         }
       }

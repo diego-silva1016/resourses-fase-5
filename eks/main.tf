@@ -6,4 +6,6 @@ module "eks" {
   node_role_arn    = var.node_role_arn
   subnet_ids       = var.subnet_ids
   tags             = var.tags
+  desired_size     = var.desired_size
+  max_size         = var.max_size
 }

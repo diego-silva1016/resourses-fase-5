@@ -17,3 +17,14 @@ variable "subnet_ids" {
 variable "tags" {
   type = map(string)
 }
+
+variable "desired_size" {
+  type = number
+  default = 3
+}
+
+variable "max_size" {
+  type = number
+  default = 4
+}
+

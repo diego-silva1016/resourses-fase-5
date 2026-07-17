@@ -5,7 +5,7 @@ variable "aws_region" {
 
 variable "state_bucket_name" {
   type    = string
-  default = "solidarytech-terraform-state"
+  default = "solidarytech-terraform-state-fase-5"
 }
 
 variable "release_name" {
