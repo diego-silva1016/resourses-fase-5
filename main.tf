@@ -64,7 +64,7 @@ variable "elasticache_cluster_id" {
 variable "newrelic_license_key" {
   type      = string
   sensitive = true
-  default   = "9a62fdb47683812f52fd532a315aff7b19acNRAL"
+  default   = ""
 }
 
 variable "enable_observability" {
