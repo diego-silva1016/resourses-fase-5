@@ -1,12 +1,13 @@
 # ---------------------------------------------------------------------------
-# Stack independente: cria Secrets Kubernetes com credenciais do RDS.
+# Stack independente: cria Secrets e ConfigMaps Kubernetes com credenciais do
+# RDS e demais parametros de configuracao (ex.: URL da fila SQS).
 #
 # Isolado do estado principal (resources/main.tf) de proposito, para nao
-# concorrer com a criacao do EKS/RDS no mesmo "plan". Le o cluster, o RDS
-# e o Secrets Manager ja existentes via data sources.
+# concorrer com a criacao do EKS/RDS no mesmo "plan". Le o cluster, o RDS,
+# o Secrets Manager e a fila SQS ja existentes via data sources.
 #
 # Uso:
-#   cd resources           && terraform apply   (cria VPC/EKS/RDS, etc.)
+#   cd resources           && terraform apply   (cria VPC/EKS/RDS/SQS, etc.)
 #   cd resources/k8s-secrets && terraform init && terraform apply
 # ---------------------------------------------------------------------------
 
@@ -65,6 +66,10 @@ data "aws_secretsmanager_secret_version" "donation_db_password" {
   secret_id = "rds-postgres-password-${var.donation_db_identifier}"
 }
 
+data "aws_sqs_queue" "donations" {
+  name = var.sqs_queue_name
+}
+
 resource "kubernetes_namespace" "solidarytech" {
   metadata {
     name = var.namespace
@@ -96,6 +101,37 @@ resource "kubernetes_secret" "donation_service" {
 
   data = {
     DATABASE_URL = "postgresql://${data.aws_db_instance.donation_db.master_username}:${urlencode(data.aws_secretsmanager_secret_version.donation_db_password.secret_string)}@${data.aws_db_instance.donation_db.address}:${data.aws_db_instance.donation_db.port}/${data.aws_db_instance.donation_db.db_name}"
+  }
+
+  type = "Opaque"
+}
+
+resource "kubernetes_config_map" "donation_service" {
+  metadata {
+    name      = var.donation_configmap_name
+    namespace = var.namespace
+    labels = {
+      app = "donation-service"
+    }
+  }
+
+  data = {
+    PORT        = var.donation_service_port
+    AWS_REGION  = var.aws_region
+    AWS_SQS_URL = data.aws_sqs_queue.donations.url
+  }
+}
+
+resource "kubernetes_secret" "volunteer_service" {
+  metadata {
+    name      = var.volunteer_secret_name
+    namespace = var.namespace
+  }
+
+  data = {
+    AWS_ACCESS_KEY_ID     = var.aws_access_key_id
+    AWS_SECRET_ACCESS_KEY = var.aws_secret_access_key
+    AWS_SESSION_TOKEN     = var.aws_session_token
   }
 
   type = "Opaque"

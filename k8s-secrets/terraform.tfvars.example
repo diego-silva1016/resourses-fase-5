@@ -1,0 +1,6 @@
+# Copie para terraform.tfvars e preencha com credenciais do AWS Academy Lab.
+# Nunca commite terraform.tfvars (contém secrets).
+
+aws_access_key_id     = "ASIA..."
+aws_secret_access_key = "..."
+aws_session_token     = "..." # obrigatório no lab AWS
