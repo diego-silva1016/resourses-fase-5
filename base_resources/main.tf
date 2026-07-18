@@ -200,6 +200,14 @@ module "argocd" {
   depends_on = [module.eks]
 }
 
+module "ingress_nginx" {
+  source = "./ingress-nginx-module"
+
+  tags = var.tags
+
+  depends_on = [module.eks]
+}
+
 # A aplicacao dos manifestos GitOps (ArgoCD Applications) fica isolada em
 # resources/gitops/, que e um stack Terraform independente (estado proprio),
 # aplicado separadamente depois que o EKS e o ArgoCD (acima) ja existirem.
@@ -299,6 +307,14 @@ output "eks_cluster_name" {
 
 output "argocd_namespace" {
   value = var.enable_gitops ? module.argocd[0].namespace : null
+}
+
+output "ingress_nginx_namespace" {
+  value = module.ingress_nginx.namespace
+}
+
+output "ingress_nginx_service_name" {
+  value = module.ingress_nginx.service_name
 }
 
 output "grafana_admin_password" {
