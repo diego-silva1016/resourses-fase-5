@@ -204,6 +204,10 @@ module "argocd" {
 # resources/gitops/, que e um stack Terraform independente (estado proprio),
 # aplicado separadamente depois que o EKS e o ArgoCD (acima) ja existirem.
 # Ver resources/gitops/main.tf.
+#
+# Os Secrets Kubernetes (ex.: DATABASE_URL do ngo-service) ficam isolados em
+# resources/k8s-secrets/, aplicados apos EKS e RDS existirem.
+# Ver resources/k8s-secrets/main.tf.
 
 module "prometheus" {
   count  = var.enable_observability ? 1 : 0
