@@ -57,6 +57,14 @@ data "aws_secretsmanager_secret_version" "ngo_db_password" {
   secret_id = "rds-postgres-password-${var.ngo_db_identifier}"
 }
 
+data "aws_db_instance" "donation_db" {
+  db_instance_identifier = var.donation_db_identifier
+}
+
+data "aws_secretsmanager_secret_version" "donation_db_password" {
+  secret_id = "rds-postgres-password-${var.donation_db_identifier}"
+}
+
 resource "kubernetes_namespace" "solidarytech" {
   metadata {
     name = var.namespace
@@ -75,6 +83,19 @@ resource "kubernetes_secret" "ngo_service" {
 
   data = {
     DATABASE_URL = "postgresql://${data.aws_db_instance.ngo_db.master_username}:${urlencode(data.aws_secretsmanager_secret_version.ngo_db_password.secret_string)}@${data.aws_db_instance.ngo_db.address}:${data.aws_db_instance.ngo_db.port}/${data.aws_db_instance.ngo_db.db_name}"
+  }
+
+  type = "Opaque"
+}
+
+resource "kubernetes_secret" "donation_service" {
+  metadata {
+    name      = var.donation_secret_name
+    namespace = var.namespace
+  }
+
+  data = {
+    DATABASE_URL = "postgresql://${data.aws_db_instance.donation_db.master_username}:${urlencode(data.aws_secretsmanager_secret_version.donation_db_password.secret_string)}@${data.aws_db_instance.donation_db.address}:${data.aws_db_instance.donation_db.port}/${data.aws_db_instance.donation_db.db_name}"
   }
 
   type = "Opaque"

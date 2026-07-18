@@ -22,3 +22,13 @@ variable "ngo_secret_name" {
   type    = string
   default = "ngo-service-secrets"
 }
+
+variable "donation_db_identifier" {
+  type    = string
+  default = "donation-db"
+}
+
+variable "donation_secret_name" {
+  type    = string
+  default = "donation-service-secrets"
+}
